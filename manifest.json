@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Buy Optimizer",
+  "description": "Real-time product insights, price prediction, review analysis, and competitor comparison.",
+  "version": "1.0",
+  "author": "Your Name",
+  
+  "permissions": [
+    "storage",
+    "scripting",
+    "alarms",
+    "notifications",
+    "activeTab"
+  ],
+
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "https://www.amazon.in/*",
+    "https://www.flipkart.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+
+ "content_scripts": [
+  {
+    "matches": [
+      "https://www.amazon.com/*",
+      "https://www.amazon.in/*",
+      "https://www.amazon.co.uk/*",
+      "https://www.flipkart.com/*"
+    ],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }
+],
+
+
+  "icons": {
+    "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.js", "popup.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
