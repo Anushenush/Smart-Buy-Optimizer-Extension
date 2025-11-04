@@ -3,24 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <title>Smart Buy Optimizer</title>
-    <link href="./popup.css" rel="stylesheet" />
+    <style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+/* ✨ Glow Hover Animations ✨ */
+.glow-card {
+  transition: all 0.25s ease;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.glow-card:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6),
+              0 0 30px rgba(59, 130, 246, 0.3);
+  transform: translateY(-3px) scale(1.01);
+  background: linear-gradient(145deg, #e0f2fe, #f0f9ff);
+}
+
+/* ✨ Specific Sections Glow Intensity */
+.glow-image:hover {
+  box-shadow: 0 0 25px rgba(38, 0, 255, 0.8);
+}
+
+.glow-description:hover {
+  box-shadow: 0 0 25px rgba(132, 0, 255, 0.8);
+}
+
+.glow-reviews:hover {
+  box-shadow: 0 0 25px rgba(132, 0, 255, 0.8);
+}
+
+.glow-buywait:hover {
+  box-shadow: 0 0 25px rgba(132, 0, 255, 0.8);
+}
+
+/* Smooth fade-in animation for popup */
+#root {
+  animation: fadeIn 0.4s ease-out;
+}
+
+</style>
+
+<link rel="stylesheet" href="./popup.css">
     
     <!-- Local React files -->
     <script src="./react.production.min.js"></script>
     <script src="./react-dom.production.min.js"></script>
-
-<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.4.0/dist/universal-sentence-encoder.min.js"></script> -->
-<!-- <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- React & ReactDOM UMD -->
-
- 
     <script defer src="./popup.js"></script>
   </head>
-  <body class="bg-gray-50 w-80 p-3">
+  <body >
     <div id="root"></div>
   </body>
 </html>
