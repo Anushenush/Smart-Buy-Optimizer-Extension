@@ -107,30 +107,355 @@ function Popup() {
   }, [info]);
 
   // Render
-  if (!info) return e("p", { className: "p-2" }, "No product data found.");
-  return e("div", { className: "font-sans text-sm text-gray-800 p-2 w-80" }, [
-    e("h1", { className: "text-lg font-semibold mb-2 text-indigo-600" }, `🛒 ${info.site} Product Info`),
-    e("p", { className: "font-medium" }, `Title: ${info.title || "N/A"}`),
-    e("p", { className: "text-green-600 mb-2" }, `Price: ₹${info.price || "N/A"}`),
-    info.image ? e("img", { src: info.image, className: "w-full my-2 rounded border" }) : null,
-    e("p", { className: "text-gray-600 mb-2" }, `Description: ${info.description || "N/A"}`),
-    e("div", { className: "text-gray-700 my-2" }, [
-      e("strong", null, "Reviews:"),
-      e("ul", null, (info.reviews || []).slice(0, 5).map((r, idx) => e("li", { key: idx }, r)))
-    ]),
-    loading ? e("p", { className: "text-blue-600" }, "🔄 AI Insights loading...") : null,
-    aiData ? e("div", { className: "mt-2 p-2 border rounded bg-gray-50" }, [
-      e("p", null, `💰 Buy/Wait: ${aiData.pricePrediction.recommendation} (Next Price: ₹${aiData.pricePrediction.nextPrice})`),
-      e("p", null, `📝 Sentiment: ${aiData.reviewAnalysis.sentiment}, Trust Score: ${aiData.reviewAnalysis.trustScore}`),
-      e("p", null, `📷 Image Quality: ${aiData.imageAnalysis.qualityScore}, Stock Image: ${aiData.imageAnalysis.stockFlag ? "Yes" : "No"}`),
-      e("p", null, `🏷️ Competitor: ${aiData.competitorData.site} Price: ₹${aiData.competitorData.price || "N/A"}`)
-    ]) : null,
-    buyerScore !== null ? e("p", { className: "mt-2 font-semibold text-purple-600" }, `🧩 Buyer Score: ${buyerScore}/100`) : null,
-    e("div", { className: "mt-2 border-t pt-2" }, [
-      e("p", null, `💰 Total Saved: ₹${dashboard.totalSaved}`),
-      e("p", null, `🏆 Smart Buys: ${dashboard.smartBuys}`)
-    ])
-  ]);
+ if (!info)
+  return e(
+    "p",
+    {
+      style: {
+        padding: "10px",
+        textAlign: "center",
+        color: "#9333ea",
+        background: "linear-gradient(145deg,#f3e8ff,#ede9fe)",
+        borderRadius: "12px",
+        fontFamily: "Segoe UI, sans-serif",
+        fontWeight: "500",
+        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
+        animation: "fadeIn 0.8s ease"
+      }
+    },
+    "⚠️ No product data found."
+  );
+
+return e(
+  "div",
+  {
+    style: {
+      fontFamily: "Segoe UI, sans-serif",
+      fontSize: "14px",
+      color: "#1f2937",
+      padding: "16px",
+      width: "340px",
+      borderRadius: "18px",
+      background: "rgba(255,255,255,0.75)",
+      backdropFilter: "blur(12px)",
+      border: "1px solid rgba(147,51,234,0.2)",
+      boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+      transform: "translateY(0)",
+      transition: "all 0.3s ease",
+      animation: "slideUp 0.6s ease-out"
+    },
+    onMouseOver: (e) => (e.currentTarget.style.transform = "translateY(-4px)"),
+    onMouseOut: (e) => (e.currentTarget.style.transform = "translateY(0)")
+  },
+  [
+    // Header
+    e(
+      "h1",
+      {
+        style: {
+          fontSize: "18px",
+          fontWeight: "600",
+          marginBottom: "10px",
+          color: "#7e22ce",
+          borderBottom: "1px solid #e9d5ff",
+          paddingBottom: "6px",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          animation: "fadeIn 0.6s ease"
+        }
+      },
+      `🛒 ${info.site} Product Info`
+    ),
+
+    // Title
+    e(
+      "p",
+      {
+        style: {
+          fontWeight: "600",
+          color: "#581c87",
+          marginBottom: "6px",
+          letterSpacing: "0.2px",
+          animation: "fadeIn 0.8s ease"
+        }
+      },
+      `📦 ${info.title || "No Title"}`
+    ),
+
+    // Price
+    e(
+      "div",
+      {
+        style: {
+          color: "#15803d",
+          fontWeight: "700",
+          fontSize: "15px",
+          background: "linear-gradient(90deg,#ecfdf5,#d1fae5)",
+          padding: "6px 10px",
+          borderRadius: "10px",
+          marginBottom: "10px",
+          display: "inline-block",
+          animation: "fadeIn 0.9s ease"
+        }
+      },
+      `💲 ₹${info.price || "N/A"}`
+    ),
+
+    // Image
+    info.image
+      ? e("img", {
+          src: info.image,
+          className: "glow-card glow-image",
+          style: {
+            width: "100%",
+            margin: "10px 0",
+            borderRadius: "14px",
+            border: "2px solid #e9d5ff",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+            transition: "transform 0.4s ease, box-shadow 0.4s ease",
+            cursor: "pointer",
+            animation: "fadeIn 1s ease"
+          },
+          onMouseOver: (e) => {
+            e.target.style.transform = "scale(1.04)";
+            e.target.style.boxShadow = "0 6px 16px rgba(147,51,234,0.3)";
+          },
+          onMouseOut: (e) => {
+            e.target.style.transform = "scale(1)";
+            e.target.style.boxShadow = "0 4px 10px rgba(0,0,0,0.15)";
+          }
+        })
+      : null,
+
+    // Description (Structured)
+    (() => {
+      const desc = info.description || "N/A";
+      const points =
+        desc.length > 80
+          ? desc
+              .split(/[\.\,\-\;\•\n]/)
+              .map((s) => s.trim())
+              .filter((s) => s.length > 2)
+          : null;
+
+      return e(
+        
+        "div", 
+        {
+          className: "glow-card glow-description",
+          style: {
+            marginBottom: "12px",
+            backgroundColor: "rgba(250,245,255,0.9)",
+            padding: "10px",
+            borderRadius: "12px",
+            border: "1px solid #e9d5ff",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+            animation: "fadeIn 1.1s ease"
+          }
+        },
+        [
+          e(
+            "p",
+            {
+              style: {
+                fontWeight: "600",
+                color: "#7e22ce",
+                marginBottom: "6px"
+              }
+            },
+            "📝 Description"
+          ),
+          points
+            ? e(
+                "ul",
+                {
+                  style: {
+                    paddingLeft: "20px",
+                    color: "#4b5563",
+                    lineHeight: "1.5",
+                    listStyleType: "disc"
+                  }
+                },
+                points.map((p, i) =>
+                  e(
+                    "li",
+                    {
+                      key: i,
+                      style: {
+                        marginBottom: "3px",
+                        fontSize: "13px"
+                      }
+                    },
+                    p
+                  )
+                )
+              )
+            : e(
+                "p",
+                { style: { color: "#4b5563", fontSize: "13px" } },
+                desc
+              )
+        ]
+      );
+    })(),
+
+    // Reviews (show all)
+    e(
+      "div",
+      {
+        className: "glow-card glow-reviews",
+        style: {
+          color: "#4b5563",
+          margin: "10px 0",
+          animation: "fadeIn 1.3s ease"
+        }
+      },
+      [
+        e(
+          "strong",
+          {
+            style: {
+              color: "#7e22ce",
+              display: "block",
+              marginBottom: "6px"
+            }
+          },
+          "⭐ Reviews"
+        ),
+        e(
+          "div",
+          {
+            style: {
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px"
+            }
+          },
+          (info.reviews || []).map((r, idx) =>
+            e(
+              "div",
+              {
+                key: idx,
+                style: {
+                  background:
+                    idx % 2 === 0
+                      ? "linear-gradient(90deg,#faf5ff,#f3e8ff)"
+                      : "linear-gradient(90deg,#f5f3ff,#ede9fe)",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  fontSize: "12.5px",
+                  color: "#581c87",
+                  fontStyle: "italic",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+                  transform: "scale(1)",
+                  transition: "transform 0.3s ease",
+                  cursor: "default"
+                },
+                onMouseOver: (e) =>
+                  (e.currentTarget.style.transform = "scale(1.02)"),
+                onMouseOut: (e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+              },
+              `💬 ${r}`
+            )
+          )
+        )
+      ]
+    ),
+
+    // AI Data
+    aiData
+      ? e(
+          "div",
+          {
+            className: "glow-card glow-buywait",
+            style: {
+              marginTop: "12px",
+              padding: "10px",
+              borderRadius: "12px",
+              border: "1px solid #d8b4fe",
+              background: "linear-gradient(145deg,#faf5ff,#f3e8ff,#ede9fe)",
+              boxShadow: "inset 0 1px 4px rgba(0,0,0,0.1)",
+              color: "#6b21a8",
+              lineHeight: "1.6",
+              animation: "fadeIn 1.5s ease"
+            }
+          },
+          [
+            e(
+              "p",
+              { style: { fontWeight: "600" } },
+              `💰 Buy/Wait: ${aiData.pricePrediction.recommendation} (Next: ₹${aiData.pricePrediction.nextPrice})`
+            ),
+            e(
+              "p",
+              null,
+              `📝 Sentiment: ${aiData.reviewAnalysis.sentiment} | Trust: ${aiData.reviewAnalysis.trustScore}`
+            ),
+            e(
+              "p",
+              null,
+              `📷 Image Quality: ${aiData.imageAnalysis.qualityScore} | Stock: ${
+                aiData.imageAnalysis.stockFlag ? "Yes" : "No"
+              }`
+            ),
+            e(
+              "p",
+              null,
+              `🏷️ Competitor: ${aiData.competitorData.site} — ₹${
+                aiData.competitorData.price || "N/A"
+              }`
+            )
+          ]
+        )
+      : null,
+
+    // Buyer Score
+    buyerScore !== null
+      ? e(
+          "p",
+          {
+            style: {
+              marginTop: "10px",
+              fontWeight: "600",
+              textAlign: "center",
+              color: "#7e22ce",
+              background:
+                "linear-gradient(90deg,#f3e8ff,#ede9fe,#faf5ff)",
+              border: "1px solid #e9d5ff",
+              borderRadius: "12px",
+              padding: "8px",
+              animation: "pulse 2s infinite ease-in-out"
+            }
+          },
+          `🧩 Buyer Score: ${buyerScore}/100`
+        )
+      : null,
+
+    // Dashboard Stats (Restored)
+    e(
+      "div",
+      {
+        style: {
+          marginTop: "12px",
+          borderTop: "1px solid #e9d5ff",
+          paddingTop: "8px",
+          display: "flex",
+          justifyContent: "space-between",
+          color: "#6b21a8",
+          fontWeight: "500",
+          animation: "fadeIn 1.7s ease"
+        }
+      },
+      [
+        e("p", null, `💰 Total Saved: ₹${dashboard.totalSaved}`),
+        e("p", null, `🏆 Smart Buys: ${dashboard.smartBuys}`)
+      ]
+    )
+  ]
+);
 }
 
 ReactDOM.render(e(Popup), document.getElementById("root"));
+
